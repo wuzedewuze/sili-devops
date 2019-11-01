@@ -3,8 +3,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.conf import settings
 User = get_user_model()
-
-
 class UserSerializer(serializers.ModelSerializer):
     """
     用户序列化类

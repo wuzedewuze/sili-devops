@@ -17,7 +17,7 @@ User = get_user_model()
 
 
 class Pagination(PageNumberPagination):
-    page_size = 2
+    page_size = 10
     page_size_query_param = 'page_size'
     page_query_param = "page"
     max_page_size = 100
@@ -37,8 +37,8 @@ class UsersViewset(viewsets.ModelViewSet):
     删除用户
     """
 
-    #authentication_classes = (JSONWebTokenAuthentication, TokenAuthentication, SessionAuthentication, BasicAuthentication)
-    #permission_classes = (permissions.DjangoModelPermissions,)
+    authentication_classes = (JSONWebTokenAuthentication, TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
