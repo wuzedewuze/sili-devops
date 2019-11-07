@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'sili_user',
     'drf_yasg', # 文档app
     'django_filters', # 引入django过滤
-    'crispy_forms', # 过滤器引入
+    #'crispy_forms', # 过滤器引入
 ]
 
 AUTH_USER_MODEL = "sili_user.User"

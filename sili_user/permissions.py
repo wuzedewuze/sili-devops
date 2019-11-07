@@ -17,4 +17,4 @@ class IsSelfuserOrSuperuser(permissions.BasePermission):
         return bool(obj == request.user or request.user.is_staff)
 
     def has_permission(self, request, view):
-        return request.user.is_superuser
+        return request.user.is_staff

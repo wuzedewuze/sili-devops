@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ("id", "username", "name", "phone", "email", "is_active","password")
+        fields = ("id", "username", "name", "phone", "email", "is_active","password","is_staff")
         # read_only_fields = [ 'username' ]
     # 自定义组信息
     def to_group_response(self, group_queryset):
