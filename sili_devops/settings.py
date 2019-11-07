@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken', # drf自带token
     'sili_user',
-    'drf_yasg',
+    'drf_yasg', # 文档app
+    'django_filters', # 引入django过滤
+    'crispy_forms', # 过滤器引入
 ]
 
 AUTH_USER_MODEL = "sili_user.User"
@@ -49,15 +51,19 @@ DOMAIN = "@xiniaoyun.com"
 
 
 REST_FRAMEWORK = {
-   'DEFAULT_PERMISSION_CLASSES': (
+    #'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],  # 设置django自带的过滤
+    'DEFAULT_PERMISSION_CLASSES': (
        'rest_framework.permissions.IsAuthenticated',
-   ),
-   'DEFAULT_AUTHENTICATION_CLASSES': (
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',      # drf自带token认证
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
 
-   )
+    ),
+    "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.PageNumberPagination",
+    'PAGE_SIZE':2,
+
 }
 
 

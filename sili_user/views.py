@@ -4,15 +4,22 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-# from rest_framework import filters
-# from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import UserFilter, GroupFilter, PermissionFilter
+
 # from rest_framework.authentication import TokenAuthentication,BasicAuthentication,SessionAuthentication
-# # from .serializers import UserSerializer
+# #
 # # from .serializers import UserSerializer, Groupserializer, PermissionSerializer
-# from .filters import UserFilter, GroupFilter, PermissionFilter
+
 # from .permissions import IsSuperUser
 
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action, permission_classes
+
+from .serializers import UserSerializer
+from .permissions import IsSelfuserOrSuperuser
 
 User = get_user_model()
 
@@ -27,9 +34,7 @@ class UserInfoViewset(viewsets.ViewSet):
     """
     获取当前登陆的用户信息
     """
-
     #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-    #permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request, *args, **kwargs):
         token, created = Token.objects.get_or_create(user=self.request.user)
@@ -42,6 +47,31 @@ class UserInfoViewset(viewsets.ViewSet):
 
 
 
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    create:
+    创建用户，管理员创建用户
+    list:
+    获取用户列表，管理员获取所有用户信息列表
+    retrieve:
+    获取用户所有基础信息，管理员可获取他人信息，自己只能获取自己信息
+    update:
+    更新用户信息，管理员可更新他人信息，自己只能更新自己信息
+    delete:
+    删除用户
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    #pagination_class = Pagination
+    # 自定义权限调用
+    permission_classes = [IsSelfuserOrSuperuser, ]
+    # 过滤查询和排序方法
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
+    search_fields = ['name', 'username']
+    ordering_fields = ('id', )
+    # 自定义过滤方法
+    filter_class = UserFilter
 
 # class UsersViewset(viewsets.ModelViewSet):
 #     """
