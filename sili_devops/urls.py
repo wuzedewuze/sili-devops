@@ -31,7 +31,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="devops API",
       default_version='v1',
-      description="吴扬测试",
+      description="sili-devops 接口文档",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
@@ -41,13 +41,15 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # 自定义首页配置
     path(r'', include(router.urls)),
+
+    # django自带认证配置
+    path('admin/', admin.site.urls),
+    # django-restframwrok 基础登录配置
     path('api-auth/', include('rest_framework.urls')),
 
-    # path(r'login/', obtain_jwt_token),
-    # path(r'jwt-refresh/', refresh_jwt_token),
-
+    # swagger文档配置
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path(r'redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

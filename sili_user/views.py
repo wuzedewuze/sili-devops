@@ -1,16 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission, Group
-from django.db.models import Q
+# from django.contrib.auth.models import Permission, Group
+# from django.db.models import Q
 from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.authentication import TokenAuthentication,BasicAuthentication,SessionAuthentication
-# from .serializers import UserSerializer
-# from .serializers import UserSerializer, Groupserializer, PermissionSerializer
-from .filters import UserFilter, GroupFilter, PermissionFilter
-from .permissions import IsSuperUser
+# from rest_framework import filters
+# from django_filters.rest_framework import DjangoFilterBackend
+# from rest_framework.authentication import TokenAuthentication,BasicAuthentication,SessionAuthentication
+# # from .serializers import UserSerializer
+# # from .serializers import UserSerializer, Groupserializer, PermissionSerializer
+# from .filters import UserFilter, GroupFilter, PermissionFilter
+# from .permissions import IsSuperUser
+
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -26,24 +28,17 @@ class UserInfoViewset(viewsets.ViewSet):
     获取当前登陆的用户信息
     """
 
-    #authentication_classes = (JSONWebTokenAuthentication, TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
     #permission_classes = (permissions.IsAuthenticated,)
 
     def list(self, request, *args, **kwargs):
+        token, created = Token.objects.get_or_create(user=self.request.user)
         data = {
-             "username": self.request.user.username,
-             "name": self.request.user.name
+            "username": self.request.user.username,
+            "name": self.request.user.name,
+            "token": token.key
         }
         return Response(data)
-
-
-
-
-
-
-
-
-
 
 
 
