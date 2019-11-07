@@ -38,28 +38,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'sili_user',
     'drf_yasg',
 ]
 
 AUTH_USER_MODEL = "sili_user.User"
+INIT_PASSWORD = "12345678"
 DOMAIN = "@xiniaoyun.com"
+
 
 REST_FRAMEWORK = {
    'DEFAULT_PERMISSION_CLASSES': (
        'rest_framework.permissions.IsAuthenticated',
    ),
    'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 全局认证JWT不推荐
+        'rest_framework.authentication.TokenAuthentication',      # drf自带token认证
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',      # drf自带token认证
+
    )
-}
-import datetime
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
-    'JWT_AUTH_HEADER_PREFIX': 'JWT',
 }
 
 
