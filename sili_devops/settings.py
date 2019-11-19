@@ -38,17 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken', # drf自带token
+    #'rest_framework.authtoken', # drf自带token
     'sili_user',
-    'drf_yasg', # 文档app
+    'drf_yasg', # 自动生成swagger文档的第三方包
     'django_filters', # 引入django过滤
+    'corsheaders', # 跨站访问设置
     #'crispy_forms', # 过滤器引入
 ]
-
+# 自定义扩展用户的方法
 AUTH_USER_MODEL = "sili_user.User"
+# 初始化密码
 INIT_PASSWORD = "12345678"
+# 内部添加后缀
 DOMAIN = "@xiniaoyun.com"
-
+#
+APPEND_SLASH=False
 
 REST_FRAMEWORK = {
     #'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],  # 设置django自带的过滤
@@ -56,13 +60,13 @@ REST_FRAMEWORK = {
        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',      # drf自带token认证
+        #'rest_framework.authentication.TokenAuthentication',      # drf自带token认证
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-
+        'rest_framework_simplejwt.authentication.JWTAuthentication', # 导入第三方的token认证
     ),
     "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.PageNumberPagination",
-    'PAGE_SIZE':2,
+    'PAGE_SIZE':10,
 
 }
 
@@ -70,12 +74,15 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# 允许跨站访问
+CORS_ORIGIN_ALLOW_ALL=True
 
 ROOT_URLCONF = 'sili_devops.urls'
 
@@ -194,7 +201,7 @@ LOGGING = {
             'formatter':'myformat',#使用哪种formatters日志格式
         },
         'console':{#输出到控制台
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
         },
@@ -207,12 +214,12 @@ LOGGING = {
         },
         'django.request': {
             'handlers': ['debug'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         'myself':{
             'handlers': ['selflog'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         # 对于不在 ALLOWED_HOSTS 中的请求不发送报错邮件

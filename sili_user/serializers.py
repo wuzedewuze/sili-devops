@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             })
         return ret
 
-    # 修改返回信息
+    # 修改返回信息 给返回信息添加自定义的组信息
     def to_representation(self, instance):
         role = self.to_group_response(instance.groups.all())
         ret = super(UserSerializer, self).to_representation(instance)

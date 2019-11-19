@@ -16,12 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 
-#from rest_framework_jwt.views import obtain_jwt_token,refresh_jwt_token
-from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from sili_user.router import users_router
+# 从路由导入路由
 router = DefaultRouter()
 router.registry.extend(users_router.registry)
+
+# 导入第三方token认证 提供获取和刷新token的方法
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -41,16 +47,24 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # 自定义首页配置
-    path(r'', include(router.urls)),
+
 
     # django自带认证配置
     path('admin/', admin.site.urls),
     # django-restframwrok 基础登录配置
     path('api-auth/', include('rest_framework.urls')),
 
-    # swagger文档配置
+    # 导入第三方token认证 提供获取和刷新token的方法
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+
+    # swagger文档配置 新版django使用re_path方法代替原来默认的正则路由
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path(r'redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
+    # 自定义首页配置
+    path('user/', include(router.urls)),
+
 ]

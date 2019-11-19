@@ -23,11 +23,11 @@ from .permissions import IsSelfuserOrSuperuser
 
 User = get_user_model()
 
-
+# 这里自定义了分页类
 class Pagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
-    page_query_param = "page"
+    page_size_query_param = 'page_size' # 返回分页大小的参数名称
+    page_query_param = "page"  # 返回分页的参数名称
     max_page_size = 100
 
 class UserInfoViewset(viewsets.ViewSet):
@@ -37,11 +37,11 @@ class UserInfoViewset(viewsets.ViewSet):
     #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
 
     def list(self, request, *args, **kwargs):
-        token, created = Token.objects.get_or_create(user=self.request.user)
+        #token, created = Token.objects.get_or_create(user=self.request.user)
         data = {
             "username": self.request.user.username,
             "name": self.request.user.name,
-            "token": token.key
+            #"token": token.key
         }
         return Response(data)
 
