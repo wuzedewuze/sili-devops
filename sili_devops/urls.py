@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 
 from rest_framework.routers import DefaultRouter
-from sili_user.router import users_router
+# from sili_user.router import users_router
 # 从路由导入路由
-router = DefaultRouter()
-router.registry.extend(users_router.registry)
+# router = DefaultRouter()
+# router.registry.extend(users_router.registry)
+
+
 
 # 导入第三方token认证 提供获取和刷新token的方法
 from rest_framework_simplejwt.views import (
@@ -46,9 +48,23 @@ schema_view = get_schema_view(
    permission_classes=(permissions.AllowAny,),
 )
 
+# 写一个apiroot方法，如果用set会自动生成
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+@api_view(['GET'])
+def my_api_root(request, format=None):
+    return Response({
+        'swagger文档': reverse('schema-swagger-ui', request=request, format=format),
+        '获取token': reverse('token_obtain_pair', request=request, format=format),
+        '刷新token':reverse('token_refresh', request=request, format=format),
+        '用户管理':reverse('user_api:api-root', request=request, format=format,),
+    })
+
+# 地址路由
 urlpatterns = [
-
-
+    path('', my_api_root),
+    path('user_api/', include('sili_user.urls',namespace='user_api')),
     # django自带认证配置
     path('admin/', admin.site.urls),
     # django-restframwrok 基础登录配置
@@ -58,13 +74,10 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-
     # swagger文档配置 新版django使用re_path方法代替原来默认的正则路由
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path(r'swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path(r'redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    # 自定义首页配置
-    path('user/', include(router.urls)),
-
 ]
+

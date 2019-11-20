@@ -1,25 +1,14 @@
 from django.contrib.auth import get_user_model
-# from django.contrib.auth.models import Permission, Group
-# from django.db.models import Q
-from rest_framework import viewsets, mixins, permissions, status
-from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-
+from .serializers import UserInfoSerializer
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
-from .filters import UserFilter, GroupFilter, PermissionFilter
-
-# from rest_framework.authentication import TokenAuthentication,BasicAuthentication,SessionAuthentication
-# #
-# # from .serializers import UserSerializer, Groupserializer, PermissionSerializer
-
-# from .permissions import IsSuperUser
-
-from rest_framework.authtoken.models import Token
-from rest_framework.decorators import action, permission_classes
-
+from .filters import UserFilter
 from .serializers import UserSerializer
-from .permissions import IsSelfuserOrSuperuser
+from rest_framework import viewsets
+from rest_framework import mixins
+from .permissions import ObjectIsSelfuserOrSuperuser
+from rest_framework import permissions
 
 User = get_user_model()
 
@@ -30,23 +19,41 @@ class Pagination(PageNumberPagination):
     page_query_param = "page"  # 返回分页的参数名称
     max_page_size = 100
 
-class UserInfoViewset(viewsets.ViewSet):
+#  登录后 获取的用户信息
+class UserInfoViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     """
-    获取当前登陆的用户信息
+    retrieve:
+    普通用户获取自己的用户信息
+    update:
+    更新用户自己信息
+    patch:
+    更新部分字段
     """
-    #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    queryset = User.objects.all()
+    serializer_class = UserInfoSerializer
+    permission_classes = [ObjectIsSelfuserOrSuperuser,]
 
-    def list(self, request, *args, **kwargs):
-        #token, created = Token.objects.get_or_create(user=self.request.user)
-        data = {
-            "username": self.request.user.username,
-            "name": self.request.user.name,
-            #"token": token.key
-        }
-        return Response(data)
+
+# class UserInfoView(RetrieveUpdateAPIView):
+#     serializer_class = UserInfoSerializer
+#     queryset =  User.objects.all()
 
 
 
+# class UserInfoViewset(viewsets.ViewSet):
+#     """
+#     获取当前登陆的用户信息
+#     """
+#     #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+#
+#     def list(self, request, *args, **kwargs):
+#         #token, created = Token.objects.get_or_create(user=self.request.user)
+#         data = {
+#             "username": self.request.user.username,
+#             "name": self.request.user.name,
+#             #"token": token.key
+#         }
+#         return Response(data)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -65,7 +72,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     #pagination_class = Pagination
     # 自定义权限调用
-    permission_classes = [IsSelfuserOrSuperuser, ]
+    permission_classes = [permissions.IsAdminUser, ]
     # 过滤查询和排序方法
     filter_backends = (DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
     search_fields = ['name', 'username']

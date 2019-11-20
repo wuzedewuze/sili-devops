@@ -4,6 +4,15 @@ from django.contrib.auth.models import Group, Permission
 from django.conf import settings
 User = get_user_model()
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    """
+        个人用户信息序列化
+    """
+    class Meta:
+        model = User
+        fields = ("id","username","name","phone", "email","password","gitlab_token","k8s_token")
+        read_only_fields = [ 'username' ]  # 设置用户名为只读字段
+        extra_kwargs = {'password': {'write_only': True}}
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -12,29 +21,31 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "name", "phone", "email", "is_active","password","is_staff")
-        # read_only_fields = [ 'username' ]
+        #read_only_fields = [ 'username' ]  # 设置用户名为只读字段
+        extra_kwargs = {'password':{'write_only':True}}
     # 自定义组信息
-    def to_group_response(self, group_queryset):
-        ret = []
-        # 将组信息序列化
-        for group in group_queryset:
-            ret.append({
-                'id': group.id,
-                'name': group.name
-            })
-        return ret
+    # def to_group_response(self, group_queryset):
+    #     ret = []
+    #     # 将组信息序列化
+    #     for group in group_queryset:
+    #         ret.append({
+    #             'id': group.id,
+    #             'name': group.name
+    #         })
+    #     return ret
 
     # 修改返回信息 给返回信息添加自定义的组信息
-    def to_representation(self, instance):
-        role = self.to_group_response(instance.groups.all())
-        ret = super(UserSerializer, self).to_representation(instance)
-        ret.pop('password')
-        ret["role"] = role
-        return ret
+    # def to_representation(self, instance):
+    #     ret = super(UserSerializer, self).to_representation(instance)
+    #     # role = self.to_group_response(instance.groups.all())
+    #     # ret["role"] = role
+    #     ret.pop('password')  # 不返回密码信息
+    #     #ret.pop('is_active')
+    #     return ret
     # 创建修改
     def create(self, validated_data):
         validated_data["is_active"] = True
-        # validated_data["password"] = settings.INIT_PASSWORD
+        # validated_data["password"] = settings.INIT_PASSWORD  # 初始化密码设置
         password = validated_data.pop("password", None)
         instance = super(UserSerializer, self).create(validated_data=validated_data)
         #instance.email = "{}{}".format(instance.username, settings.DOMAIN)
@@ -50,6 +61,9 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             instance.save()
         return instance
+
+#
+
 
 
 # class Groupserializer(serializers.ModelSerializer):
