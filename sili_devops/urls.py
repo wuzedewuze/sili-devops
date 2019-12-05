@@ -65,6 +65,10 @@ def my_api_root(request, format=None):
 urlpatterns = [
     path('', my_api_root),
     path('user_api/', include('sili_user.urls',namespace='user_api')),
+
+
+
+
     # django自带认证配置
     path('admin/', admin.site.urls),
     # django-restframwrok 基础登录配置

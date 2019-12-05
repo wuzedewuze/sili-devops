@@ -10,6 +10,7 @@ from rest_framework import mixins
 from .permissions import ObjectIsSelfuserOrSuperuser
 from rest_framework import permissions
 
+
 User = get_user_model()
 
 # 这里自定义了分页类
@@ -20,18 +21,19 @@ class Pagination(PageNumberPagination):
     max_page_size = 100
 
 #  登录后 获取的用户信息
-class UserInfoViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
-    """
-    retrieve:
-    普通用户获取自己的用户信息
-    update:
-    更新用户自己信息
-    patch:
-    更新部分字段
-    """
-    queryset = User.objects.all()
-    serializer_class = UserInfoSerializer
-    permission_classes = [ObjectIsSelfuserOrSuperuser,]
+# class UserInfoViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+#     """
+#     retrieve:
+#     普通用户获取自己的用户信息
+#     update:
+#     更新用户自己信息
+#     patch:
+#     更新部分字段
+#     """
+#     queryset = User.objects.all()
+#     serializer_class = UserInfoSerializer
+#     #authentication_classes = (,) # 在setting中设置了默认值
+#     permission_classes = [ObjectIsSelfuserOrSuperuser,]
 
 
 # class UserInfoView(RetrieveUpdateAPIView):
@@ -39,21 +41,21 @@ class UserInfoViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewse
 #     queryset =  User.objects.all()
 
 
+from rest_framework.response import Response
+class UserInfoViewSet(viewsets.ViewSet):
+    """
+    获取当前登陆的用户信息
+    """
+    #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
 
-# class UserInfoViewset(viewsets.ViewSet):
-#     """
-#     获取当前登陆的用户信息
-#     """
-#     #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-#
-#     def list(self, request, *args, **kwargs):
-#         #token, created = Token.objects.get_or_create(user=self.request.user)
-#         data = {
-#             "username": self.request.user.username,
-#             "name": self.request.user.name,
-#             #"token": token.key
-#         }
-#         return Response(data)
+    def list(self, request, *args, **kwargs):
+        #token, created = Token.objects.get_or_create(user=self.request.user)
+        data = {
+            "username": self.request.user.username,
+            "name": self.request.user.name,
+            #"token": token.key
+        }
+        return Response(data)
 
 class UserViewSet(viewsets.ModelViewSet):
     """
