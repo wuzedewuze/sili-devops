@@ -75,7 +75,8 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
 
     # 导入第三方token认证 提供获取和刷新token的方法
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # 参考地址：https://github.com/davesque/django-rest-framework-simplejwt
+    path('user/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # 这里的地址改成跟前段一样的调用链接
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # swagger文档配置 新版django使用re_path方法代替原来默认的正则路由

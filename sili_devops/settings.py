@@ -52,7 +52,7 @@ INIT_PASSWORD = "12345678"
 # 内部添加后缀
 DOMAIN = "@xiniaoyun.com"
 #
-APPEND_SLASH=False
+#APPEND_SLASH=False
 
 REST_FRAMEWORK = {
     #'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],  # 设置django自带的过滤
@@ -83,6 +83,8 @@ MIDDLEWARE = [
 ]
 # 允许跨站访问
 CORS_ORIGIN_ALLOW_ALL=True
+# withCredentials: True
+
 
 ROOT_URLCONF = 'sili_devops.urls'
 
@@ -157,6 +159,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -201,7 +205,7 @@ LOGGING = {
             'formatter':'myformat',#使用哪种formatters日志格式
         },
         'console':{#输出到控制台
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
         },
@@ -209,7 +213,7 @@ LOGGING = {
     'loggers': {#logging管理器
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True
         },
         'django.request': {
@@ -219,7 +223,7 @@ LOGGING = {
         },
         'myself':{
             'handlers': ['selflog'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': False,
         },
         # 对于不在 ALLOWED_HOSTS 中的请求不发送报错邮件

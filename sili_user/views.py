@@ -47,7 +47,6 @@ class UserInfoViewSet(viewsets.ViewSet):
     获取当前登陆的用户信息
     """
     #authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-
     def list(self, request, *args, **kwargs):
         #token, created = Token.objects.get_or_create(user=self.request.user)
         data = {
@@ -56,6 +55,12 @@ class UserInfoViewSet(viewsets.ViewSet):
             #"token": token.key
         }
         return Response(data)
+
+
+
+
+
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
