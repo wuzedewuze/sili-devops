@@ -56,12 +56,6 @@ class UserInfoViewSet(viewsets.ViewSet):
         }
         return Response(data)
 
-
-
-
-
-
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     create:
@@ -77,7 +71,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    #pagination_class = Pagination
+    # pagination_class = Pagination
     # 自定义权限调用
     permission_classes = [permissions.IsAdminUser, ]
     # 过滤查询和排序方法

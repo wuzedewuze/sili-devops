@@ -53,7 +53,7 @@ INIT_PASSWORD = "12345678"
 DOMAIN = "@xiniaoyun.com"
 #
 #APPEND_SLASH=False
-
+import  datetime
 REST_FRAMEWORK = {
     #'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],  # 设置django自带的过滤
     'DEFAULT_PERMISSION_CLASSES': (
@@ -66,7 +66,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication', # 导入第三方的token认证
     ),
     "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.PageNumberPagination",
-    'PAGE_SIZE':10,
+    'PAGE_SIZE':15,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
 
 }
 
