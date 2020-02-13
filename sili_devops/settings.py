@@ -192,7 +192,7 @@ LOGGING = {
         'debug': {#记录到日志文件(需要创建对应的目录，否则会出错)
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': "/var/log/django/django.log",#日志输出文件
+            'filename': "django.log",#日志输出文件
             'maxBytes':1024*1024*5,#文件大小
             'backupCount': 10,#备份份数
             'formatter':'standard',#使用哪种formatters日志格式
@@ -200,7 +200,7 @@ LOGGING = {
         'selflog':{# 自定义日志文件
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': "/var/log/django/myself.log",#日志输出文件
+            'filename': "myself.log",#日志输出文件
             'maxBytes':1024*1024*5,#文件大小
             'backupCount': 10,#备份份数
             'formatter':'myformat',#使用哪种formatters日志格式
