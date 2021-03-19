@@ -1,5 +1,5 @@
 # Everything needed in production
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 drf-yasg==1.17.0
 django-filter==2.2.0
 djangorestframework-simplejwt==4.3.0
